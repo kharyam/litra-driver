@@ -4,25 +4,83 @@
 
 After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products/lighting/litra-glow.946-000001.html) I was unable to find any support for linux. This project attempts to reverse-engineer the basic functionality of the litra pro so that we can control it via USB without using the physical buttons on the device.
 
-## Current Status
+## Status
 
-Successfully reverse engineered USB calls to turn on / off the device, set the brightness and set the temperature. The code is currently just a demo of this functionality using [PyUSB](https://pyusb.github.io/pyusb/).  This will be expanded to a simple CLI / UI that can be used to control a litra.
+|Date|Description|
+|-----------|----------------------------------------------------------|
+| 2/2/2022  | Implemented an initial utility library and CLI|
+| 2/1/2022  | Successfully reverse engineered USB calls to turn on / off the device, set the brightness and set the temperature. Created a simple standalone demo - `litra-demo.py`
 
-## Running the demo (Linux)
+
+## Setup
+
+```bash
+# Create a udev role to grant permission to access the light
+sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
+           MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
+```
+
+## Running the demo (DEPRACATED)
 
 This has been tested on Fedora 35
 
 ```bash
-sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900", MODE="0666"' \
-      > /etc/udev/rules.d/82-litra-glow.rules
-
 git clone https://github.com/kharyam/litra-driver.git
 
 cd litra-driver
 
 python -m venv .venvs/default
 source .venvs/default/bin/activate
-pip install pyusb
+pip install pyusb fire
 python litra-demo.py
 ```
 
+## The CLI
+
+The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
+* CRITICAL
+* ERROR
+* WARNING
+* INFO
+* DEBUG
+
+```
+NAME
+    lc
+
+SYNOPSIS
+    lc COMMAND
+
+COMMANDS
+    COMMAND is one of the following:
+
+     on
+       Turns on the Litra Glow
+
+     off
+       Turns off the Litra Glow
+
+     brightness
+       Sets the brightness level of the Litra Glow
+
+     temp
+       Sets the temperature level of the Litra Glow
+```
+
+Sample Usage
+```bash
+lc power on
+lc brightness 1
+lc brightness 100
+lc temperature 2700
+lc temperature 6500
+lc power off
+```
+
+## Development
+### Creating / installing the distribution
+
+```
+python setup.py sdist
+
+```
