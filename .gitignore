@@ -1,1 +1,8 @@
 .venvs
+dist
+version.py
+*.egg-info
+__pycache__
+.eggs
+.tox
+pdoc3-html

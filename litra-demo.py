@@ -13,6 +13,7 @@ LIGHT_ON = 0x01
 dev = None
 reattach = False
 
+
 def init():
     global dev
     global reattach
@@ -88,19 +89,14 @@ def set_temperature(temp1, temp2):
 
 
 light_on()
-time.sleep(1)
-
 for i in range(0x14, 0x86, 10):
     set_brightness(i)
     time.sleep(1)
-
 set_temperature(0x0a, 0x8c)  # Warm
 time.sleep(3)
 set_temperature(0x11, 0xf8)  # Medium
 time.sleep(3)
 set_temperature(0x19, 0x64)  # Cool
 time.sleep(3)
-
+set_brightness(0x14)
 light_off()
-
-#print(dev.read(0x02, 0x40))
