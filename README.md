@@ -16,9 +16,9 @@ This has been tested on Fedora 35
 sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900", MODE="0666"' \
       > /etc/udev/rules.d/82-litra-glow.rules
 
-git clone ...
+git clone https://github.com/kharyam/litra-driver.git
 
-cd ...
+cd litra-driver
 
 python -m venv .venvs/default
 source .venvs/default/bin/activate
