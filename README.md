@@ -4,37 +4,31 @@
 
 After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products/lighting/litra-glow.946-000001.html) I was unable to find any support for linux. This project attempts to reverse-engineer the basic functionality of the litra pro so that we can control it via USB without using the physical buttons on the device.
 
-## Status
-
-|Date|Description|
-|-----------|----------------------------------------------------------|
-| 2/2/2022  | Implemented an initial UI|
-| 2/2/2022  | Implemented an initial utility library and CLI|
-| 2/1/2022  | Successfully reverse engineered USB calls to turn on / off the device, set the brightness and set the temperature. Created a simple standalone demo - `litra-demo.py`
-
-
-## Setup
+## Quick Start
 
 ```bash
 # Create a udev role to grant permission to access the light
 sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
            MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
+
+sudo reboot
+pip install litra-driver
+
+# Command Line Interface
+lc --help
+
+# User Interface
+lcui
+
 ```
 
-## Running the demo (DEPRACATED)
+## Status
 
-This has been tested on Fedora 35
-
-```bash
-git clone https://github.com/kharyam/litra-driver.git
-
-cd litra-driver
-
-python -m venv .venvs/default
-source .venvs/default/bin/activate
-pip install pyusb fire
-python litra-demo.py
-```
+| Date      | Description                                              |
+|-----------|----------------------------------------------------------|
+| 2/2/2022  | Implemented an initial UI                                |
+| 2/2/2022  | Implemented an initial utility library and CLI           |
+| 2/1/2022  | Successfully reverse engineered basic USB commands       |
 
 ## The CLI
 
