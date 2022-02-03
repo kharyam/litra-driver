@@ -6,8 +6,9 @@ After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products
 
 ## Quick Start
 
+### Linux
 ```bash
-# Create a udev role to grant permission to access the light
+# If necessary, create a udev role to grant permission to access the light
 sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
            MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
 
@@ -67,8 +68,8 @@ Sample Usage
 lc on
 lc brightness 1
 lc brightness 100
-lc temperature 2700
 lc temperature 6500
+lc temperature 2700
 lc off
 ```
 
@@ -79,20 +80,21 @@ A basic UI can be launched to allow control of the light:
 lcui
 ```
 
-
+![lcui Screen Shot](images/ui.png)
 
 ## Development
 ### Creating / installing the distribution
 
-```
+```bash
 # Create distribution
-python setup.py sdist
-
-# or
-pip install build
 python -m build
 
 # Local Testing
 pip install --editable .
 
+# Linter
+tox -e lint
+
+# Unit Test - "Coming Soon"™
+tox -e test
 ```
