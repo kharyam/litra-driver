@@ -8,6 +8,7 @@ After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products
 
 |Date|Description|
 |-----------|----------------------------------------------------------|
+| 2/2/2022  | Implemented an initial UI|
 | 2/2/2022  | Implemented an initial utility library and CLI|
 | 2/1/2022  | Successfully reverse engineered USB calls to turn on / off the device, set the brightness and set the temperature. Created a simple standalone demo - `litra-demo.py`
 
