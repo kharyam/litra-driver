@@ -69,18 +69,35 @@ COMMANDS
 
 Sample Usage
 ```bash
-lc power on
+lc on
 lc brightness 1
 lc brightness 100
 lc temperature 2700
 lc temperature 6500
-lc power off
+lc off
 ```
+
+## The UI
+A basic UI can be launched to allow control of the light:
+
+```bash
+lcui
+```
+
+
 
 ## Development
 ### Creating / installing the distribution
 
 ```
+# Create distribution
 python setup.py sdist
+
+# or
+pip install build
+python -m build
+
+# Local Testing
+pip install --editable .
 
 ```

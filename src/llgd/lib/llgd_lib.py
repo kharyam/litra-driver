@@ -27,6 +27,7 @@ def setup():
         is a bool indicating whether the kernel driver should be reattached
     """
     dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+    reattach = False
     if dev.is_kernel_driver_active(0):
         logging.debug("kernel driver active")
         reattach = True

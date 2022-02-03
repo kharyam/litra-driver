@@ -6,3 +6,4 @@ __pycache__
 .eggs
 .tox
 pdoc3-html
+.coverage
