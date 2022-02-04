@@ -2,7 +2,7 @@
 
 ## Introduction
 
-After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products/lighting/litra-glow.946-000001.html) I was unable to find any support for linux. This project attempts to reverse-engineer the basic functionality of the litra pro so that we can control it via USB without using the physical buttons on the device.
+After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products/lighting/litra-glow.946-000001.html) I was unable to find any support for linux. This project reverse-engineers the basic functionality of the litra pro so that we can control it via USB without using the physical buttons on the device.
 
 ## Quick Start
 
@@ -67,10 +67,11 @@ Sample Usage
 ```bash
 lc on
 lc brightness 1
-lc brightness 100
-lc temperature 6500
-lc temperature 2700
+lc brightness 50
 lc off
+
+# Chain multiple commands
+lc on brightness 100 temperature 2700
 ```
 
 ## The UI
