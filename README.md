@@ -56,11 +56,11 @@ COMMANDS
      off
        Turns off the Litra Glow
 
-     brightness
-       Sets the brightness level of the Litra Glow
-
      temp
        Sets the temperature level of the Litra Glow
+
+     bright
+       Sets the brightness level of the Litra Glow
 ```
 
 Sample Usage
