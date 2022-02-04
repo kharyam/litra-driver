@@ -67,10 +67,11 @@ Sample Usage
 ```bash
 lc on
 lc brightness 1
-lc brightness 100
-lc temperature 6500
-lc temperature 2700
+lc brightness 50
 lc off
+
+# Chain multiple commands
+lc on brightness 100 temperature 2700
 ```
 
 ## The UI
