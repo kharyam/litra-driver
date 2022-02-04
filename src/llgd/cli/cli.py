@@ -8,7 +8,8 @@ import fire
 from llgd.lib.llgd_lib import light_on, light_off, set_brightness, set_temperature
 
 logging.basicConfig(
-    format='%(asctime)s [%(levelname)s] %(message)s', level=os.getenv('LITRA_LOGLEVEL', default='WARNING'))
+    format='%(asctime)s [%(levelname)s] %(message)s', level=os.getenv('LITRA_LOGLEVEL',
+                                                                      default='WARNING'))
 
 
 class Cli():
@@ -20,7 +21,7 @@ class Cli():
         """
         self.command_count = 0
 
-    def on(self):
+    def on(self):  # pylint: disable=invalid-name
         """
         Turns on the Litra Glow
         """
@@ -66,7 +67,8 @@ class Cli():
 
 
 def main():
-
+    """Entrypoint into the cli
+    """
     cli = Cli()
 
     # Explicitly map the commands to the class methods even though

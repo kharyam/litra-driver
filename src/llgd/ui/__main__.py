@@ -1,9 +1,8 @@
 """UI Definition
 """
 import sys
-import logging
 import PySimpleGUI as sg  # pylint: disable=import-error
-from psgtray import SystemTray
+from psgtray import SystemTray  # pylint: disable=import-error
 from llgd.lib.llgd_lib import light_on, light_off, set_brightness, set_temperature
 
 
@@ -38,16 +37,15 @@ def main():
     window = sg.Window('Logitech Lumitra Glow',
                        main_layout, enable_close_attempted_event=True)
 
-    trayMenu = ['', ['Show Window', 'Hide Window', '---',
-                     'Power', ['On', 'Off'], 'Exit']]
+    tray_menu = ['', ['Show Window', 'Hide Window', '---',
+                      'Power', ['On', 'Off'], 'Exit']]
 
-    tray = SystemTray(trayMenu, single_click_events=False, window=window,
+    tray = SystemTray(tray_menu, single_click_events=False, window=window,
                       tooltip="Lumitra Glow", icon=sg.DEFAULT_BASE64_ICON)
 
     # The Event Loop
     while True:
         event, values = window.read()
-        logging.debug(f"Event: [{event}] Values: {values}")
         if event == tray.key:
             event = values[event]
         if event in (sg.WIN_CLOSED, 'Exit'):
