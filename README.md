@@ -23,14 +23,14 @@ lcui
 
 ```
 
-## Status
+## The UI
+A basic UI can be launched to allow control of the light:
 
-| Date      | Description                                              |
-|-----------|----------------------------------------------------------|
-| 2/2/2022  | Implemented an initial UI                                |
-| 2/2/2022  | Implemented an initial utility library and CLI           |
-| 2/1/2022  | Successfully reverse engineered basic USB commands       |
+```bash
+lcui
+```
 
+![lcui Screen Shot](images/ui.png)
 ## The CLI
 
 The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
@@ -73,15 +73,6 @@ lc off
 # Chain multiple commands
 lc on brightness 100 temperature 2700
 ```
-
-## The UI
-A basic UI can be launched to allow control of the light:
-
-```bash
-lcui
-```
-
-![lcui Screen Shot](images/ui.png)
 
 ## Development
 ### Creating / installing the distribution
