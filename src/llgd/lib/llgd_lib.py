@@ -40,7 +40,7 @@ def setup():
         else:
             logging.debug("kernel driver not active")
 
-    except AttributeError:
+    except NotImplementedError:
         logging.debug(
             '"is_kernel_driver_active()" method not found. Continuing')
 
@@ -54,6 +54,7 @@ def setup():
 def teardown(dev, reattach):
     """Tears down the device
     """
+    usb.util.release_interface(dev, 0)
     usb.util.dispose_resources(dev)
     if reattach:
         dev.attach_kernel_driver(0)
@@ -65,7 +66,6 @@ def light_on():
     dev, reattach = setup()
     dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
     logging.info("Light On")
     teardown(dev, reattach)
 
@@ -76,7 +76,6 @@ def light_off():
     dev, reattach = setup()
     dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
     logging.info("Light Off")
     teardown(dev, reattach)
 
@@ -93,7 +92,6 @@ def set_brightness(level):
         MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
     dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
     logging.info("Brightness set to %d", level)
     teardown(dev, reattach)
 
@@ -109,6 +107,6 @@ def set_temperature(temp):
     dev.write(0x02, [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
               TIMEOUT_MS)
-    dev.read(0x02, 64)
+
     logging.info("Temperature set to %d", temp)
     teardown(dev, reattach)
