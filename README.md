@@ -37,13 +37,6 @@ lcui
 ![lcui Screen Shot](images/ui.png)
 ## The CLI
 
-The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
-* CRITICAL
-* ERROR
-* WARNING
-* INFO
-* DEBUG
-
 ```
 NAME
     lc
@@ -77,6 +70,13 @@ lc off
 # Chain multiple commands
 lc on brightness 100 temperature 2700
 ```
+
+The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
+* CRITICAL
+* ERROR
+* WARNING
+* INFO
+* DEBUG
 
 ## Development
 ### Creating / installing the distribution
