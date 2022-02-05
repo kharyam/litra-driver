@@ -13,7 +13,10 @@ sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
            MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
 
 sudo reboot
-pip install litra-driver --upgrade
+
+# Uninstall if previously installed
+pip uninstall litra-driver
+pip install litra-driver
 
 # Command Line Interface
 lc --help
