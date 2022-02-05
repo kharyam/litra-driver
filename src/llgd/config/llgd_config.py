@@ -55,6 +55,7 @@ class LlgdConfig:
             brightness (int, optional): Brightness level. Defaults to None.
             temp (int, optional): Temperature level. Defaults to None.
         """
+        self.config.read(self.config_file)
         write_result = False
 
         if not self.config.has_section(profile_name):
@@ -62,11 +63,11 @@ class LlgdConfig:
             write_result = True
 
         if brightness != None:
-            self.config.set(profile_name, self.BRIGHT, str(brightness))
+            self.config.set(profile_name, self.BRIGHT, str(int(brightness)))
             write_result = True
 
         if temp != None:
-            self.config.set(profile_name, self.TEMP, str(temp))
+            self.config.set(profile_name, self.TEMP, str(int(temp)))
             write_result = True
 
         if write_result:
@@ -100,6 +101,17 @@ class LlgdConfig:
             indexed by LlgdConfig.BRIGHT and LlgdConfig.TEMP
         """
         return self.read_profile(self.CURRENT_PROFILE_NAME)
+
+    def get_profile_names(self):
+        """Return the list of profile names with "current" being first
+
+        Returns:
+            list[str]: Profile names
+        """
+        profiles = self.config.sections()
+        profiles.remove(self.CURRENT_PROFILE_NAME)
+        profiles.insert(0, self.CURRENT_PROFILE_NAME)
+        return profiles
 
     def write_config(self):
         """Writes the configuration information to disk
