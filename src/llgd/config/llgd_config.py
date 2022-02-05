@@ -1,6 +1,7 @@
+"""Manage custom profiles
+"""
 import configparser
 from os import environ, path, makedirs
-from re import T
 
 
 class LlgdConfig:
@@ -18,11 +19,11 @@ class LlgdConfig:
         self.config = configparser.ConfigParser()
         self.config_file = None
         xdg_config = environ.get('XDG_CONFIG_HOME')
-        if xdg_config != None:
-            dir = path.join(xdg_config, "llgd")
-            if not path.exists(dir):
-                makedirs(dir)
-            self.config_file = path.join(dir, "config")
+        if xdg_config is not None:
+            config_dir = path.join(xdg_config, "llgd")
+            if not path.exists(config_dir):
+                makedirs(config_dir)
+            self.config_file = path.join(config_dir, "config")
         else:
             self.config_file = path.join(path.expanduser('~'), ".llgd_config")
         self.config.read(self.config_file)
@@ -62,11 +63,11 @@ class LlgdConfig:
             self.config.add_section(profile_name)
             write_result = True
 
-        if brightness != None:
+        if brightness is not None:
             self.config.set(profile_name, self.BRIGHT, str(int(brightness)))
             write_result = True
 
-        if temp != None:
+        if temp is not None:
             self.config.set(profile_name, self.TEMP, str(int(temp)))
             write_result = True
 
@@ -86,9 +87,9 @@ class LlgdConfig:
         brightness = self.config.get(profile_name, self.BRIGHT, fallback=None)
         temperature = self.config.get(profile_name, self.TEMP, fallback=None)
 
-        if brightness != None:
+        if brightness is not None:
             brightness = int(brightness)
-        if temperature != None:
+        if temperature is not None:
             temperature = int(temperature)
 
         return {self.BRIGHT: brightness, self.TEMP: temperature}
@@ -116,5 +117,5 @@ class LlgdConfig:
     def write_config(self):
         """Writes the configuration information to disk
         """
-        with open(self.config_file, 'w') as configfile:
+        with open(self.config_file, 'w', encoding="utf-8") as configfile:
             self.config.write(configfile)

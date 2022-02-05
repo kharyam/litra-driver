@@ -1,6 +1,5 @@
 """UI Definition
 """
-import logging
 import sys
 import PySimpleGUI as sg  # pylint: disable=import-error
 from psgtray import SystemTray  # pylint: disable=import-error
@@ -8,15 +7,19 @@ from llgd.lib.llgd_lib import light_on, light_off, set_brightness, set_temperatu
 from llgd.config.llgd_config import LlgdConfig
 
 
-def main():
+def main():  # pylint: disable=too-many-locals
+    # pylint: disable=too-many-branches
+    # # pylint: disable=too-many-statements
+    """ Starts the UI
+    """
 
     config = LlgdConfig()
     initial_settings = config.read_current_state()
-    default_brightness = 50 if initial_settings[config.BRIGHT] == None else initial_settings[config.BRIGHT]
-    default_temp = 4600 if initial_settings[config.TEMP] == None else initial_settings[config.TEMP]
+    default_brightness = 50 if initial_settings[config.BRIGHT] is \
+        None else initial_settings[config.BRIGHT]
+    default_temp = 4600 if initial_settings[config.TEMP] is \
+        None else initial_settings[config.TEMP]
 
-    """ Starts the UI
-    """
     sg.theme('Default1')
 
     power_layout = [
@@ -26,14 +29,18 @@ def main():
     brightness_layout = [
         [sg.Slider(range=(1, 100),
                    default_value=default_brightness,
-                   resolution=1, orientation="horizontal", enable_events=True, expand_x=True, key='bright')]]
+                   resolution=1, orientation="horizontal", enable_events=True, expand_x=True,
+                   key='bright')]]
 
     temperature_layout = [
         [sg.Slider(range=(2700, 6500), default_value=default_temp,
-                   resolution=50, orientation="horizontal", enable_events=True, expand_x=True, key='temp')]]
+                   resolution=50, orientation="horizontal", enable_events=True, expand_x=True,
+                   key='temp')]]
 
-    profile_layout = [sg.Combo(config.get_profile_names(), key='profiles', default_value=config.CURRENT_PROFILE_NAME, readonly=True,
-                               enable_events=True, tooltip="The currently selected profile", expand_x=True, size=(20, 1)), sg.Button(
+    profile_layout = [sg.Combo(config.get_profile_names(), key='profiles',
+                               default_value=config.CURRENT_PROFILE_NAME, readonly=True,
+                               enable_events=True, tooltip="The currently selected profile",
+                               expand_x=True, size=(20, 1)), sg.Button(
         'Save as...', key='save', tooltip="Save the current settings as a new profile"),
         sg.Button('Delete', key='delete', disabled=True, tooltip="Delete the selected profile")]
 
@@ -52,7 +59,8 @@ def main():
     settings_frame = [[sg.Frame('Settings', layout=settings_layout)]]
 
     main_layout = [power_frame, settings_frame, [
-        sg.Exit()], [sg.StatusBar("Updating current settings.", expand_x=True, background_color="#FFFFFF", key="status_bar")]]
+        sg.Exit()], [sg.StatusBar("Updating current settings.", expand_x=True,
+                                  background_color="#FFFFFF", key="status_bar")]]
     window = sg.Window('Logitech Lumitra Glow',
                        main_layout, enable_close_attempted_event=True)
 
@@ -81,12 +89,12 @@ def main():
             light_off()
         elif event == "bright":
             set_brightness(int(values[event]))
-            if values["profiles"] != config.CURRENT_PROFILE_NAME:
+            if values["profiles"] is not config.CURRENT_PROFILE_NAME:
                 config.add_or_update_profile(
                     values["profiles"], brightness=int(values[event]))
         elif event == "temp":
             set_temperature(int(values[event]))
-            if values["profiles"] != config.CURRENT_PROFILE_NAME:
+            if values["profiles"] is not config.CURRENT_PROFILE_NAME:
                 config.add_or_update_profile(
                     values["profiles"], temp=int(values[event]))
         elif event == "profiles":
@@ -106,8 +114,9 @@ def main():
                     value=f'Updating profile "{values[event]}"')
         elif event == "delete":
             do_delete = sg.popup_yes_no(
-                f'Delete profile "{values["profiles"]}"?', title="Delete Profile", background_color="#FF8888")
-            if (do_delete == "Yes"):
+                f'Delete profile "{values["profiles"]}"?', title="Delete Profile",
+                background_color="#FF8888")
+            if do_delete == "Yes":
                 config.delete_profile(values["profiles"])
                 window["profiles"].update(
                     values=config.get_profile_names(), value=config.CURRENT_PROFILE_NAME)
