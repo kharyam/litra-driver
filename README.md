@@ -63,12 +63,12 @@ COMMANDS
 Sample Usage
 ```bash
 lc on
-lc brightness 1
-lc brightness 50
+lc bright 10
+lc temp 6500
 lc off
 
 # Chain multiple commands
-lc on brightness 100 temperature 2700
+lc on bright 100 temp 2700
 ```
 
 The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
