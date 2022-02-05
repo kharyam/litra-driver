@@ -1,4 +1,5 @@
 # Python Utility for Logitech Litra Glow
+[![PyPI version](https://badge.fury.io/py/litra-driver.svg)](https://badge.fury.io/py/litra-driver)
 
 ## Introduction
 
