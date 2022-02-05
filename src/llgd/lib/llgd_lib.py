@@ -6,6 +6,7 @@ import logging
 import math
 import usb.core
 import usb.util
+from llgd.config.llgd_config import LlgdConfig
 
 VENDOR_ID = 0x046d
 PRODUCT_ID = 0xc900
@@ -14,6 +15,8 @@ LIGHT_ON = 0x01
 TIMEOUT_MS = 3000
 MIN_BRIGHTNESS = 0x14
 MAX_BRIGHTNESS = 0xfa
+
+config = LlgdConfig()
 
 
 def setup():
@@ -94,6 +97,7 @@ def set_brightness(level):
     dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
     dev.read(0x02, 64)
+    config.update_current_state(brightness=level)
     logging.info("Brightness set to %d", level)
     teardown(dev, reattach)
 
@@ -110,5 +114,6 @@ def set_temperature(temp):
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
               TIMEOUT_MS)
     dev.read(0x02, 64)
+    config.update_current_state(temp=temp)
     logging.info("Temperature set to %d", temp)
     teardown(dev, reattach)
