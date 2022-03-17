@@ -19,7 +19,8 @@ MAX_BRIGHTNESS = 0xfa
 config = LlgdConfig()
 
 def count():
-
+    """ Returns a count of all devices
+    """
     devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
     total_dev_count = 0
     for _ in devs:
