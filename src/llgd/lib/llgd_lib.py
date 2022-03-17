@@ -36,7 +36,11 @@ def setup(index):
         [device, reattach]: where device is a Device object and reattach
         is a bool indicating whether the kernel driver should be reattached
     """
-    dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
+    dev_list = []
+    for a_dev in devs:
+        dev_list.append(a_dev)
+    dev = dev_list[index]
     if dev is None:
         raise ValueError('Device not found')
 
