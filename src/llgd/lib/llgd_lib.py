@@ -30,7 +30,7 @@ def setup(index):
     """Sets up the device
 
     Raises:
-        ValueError: Whhen the device cannot be found
+        ValueError: When the device cannot be found
 
     Returns:
         [device, reattach]: where device is a Device object and reattach
