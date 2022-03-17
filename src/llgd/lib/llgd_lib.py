@@ -18,8 +18,15 @@ MAX_BRIGHTNESS = 0xfa
 
 config = LlgdConfig()
 
+def count():
 
-def setup():
+    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
+    total_dev_count = 0
+    for _ in devs:
+        total_dev_count+=1
+    return total_dev_count
+
+def setup(index):
     """Sets up the device
 
     Raises:
