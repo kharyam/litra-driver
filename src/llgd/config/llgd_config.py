@@ -1,7 +1,12 @@
 """Manage custom profiles
 """
 import configparser
-from os import environ, path, makedirs
+import logging
+from os import environ, path, makedirs, getenv
+
+logging.basicConfig(
+    format='%(asctime)s [%(levelname)s] %(message)s', level=getenv('LITRA_LOGLEVEL',
+                                                                   default='WARNING'))
 
 
 class LlgdConfig:
@@ -110,8 +115,15 @@ class LlgdConfig:
             list[str]: Profile names
         """
         profiles = self.config.sections()
-        profiles.remove(self.CURRENT_PROFILE_NAME)
+
+        try:
+            profiles.remove(self.CURRENT_PROFILE_NAME)
+        except ValueError:
+            logging.info(
+                '"%s" section not found in config file. Ignoring', self.CURRENT_PROFILE_NAME)
+
         profiles.insert(0, self.CURRENT_PROFILE_NAME)
+
         return profiles
 
     def write_config(self):
