@@ -79,6 +79,10 @@ The log level can be adjusted by setting the environment variable `LITRA_LOGLEVE
 * DEBUG
 
 ## Development
+
+### UI Design
+![UI Design](images/design_notes.png)
+
 ### Creating / installing the distribution
 
 ```bash
