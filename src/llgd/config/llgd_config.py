@@ -87,12 +87,12 @@ class LlgdConfig:
         brightness = self.config.get(profile_name, self.BRIGHT, fallback=None)
         temperature = self.config.get(profile_name, self.TEMP, fallback=None)
 
-        if brightness is not None:
-            brightness = int(brightness)
-        if temperature is not None:
-            temperature = int(temperature)
+        result = None
 
-        return {self.BRIGHT: brightness, self.TEMP: temperature}
+        if brightness is not None and temperature is not None:
+            result = {self.BRIGHT: int(brightness),
+                      self.TEMP: int(temperature)}
+        return result
 
     def read_current_state(self):
         """Returns the attributes of the current state of the light
@@ -110,7 +110,12 @@ class LlgdConfig:
             list[str]: Profile names
         """
         profiles = self.config.sections()
-        profiles.remove(self.CURRENT_PROFILE_NAME)
+
+        try:
+            profiles.remove(self.CURRENT_PROFILE_NAME)
+        except:
+            # no-op
+
         profiles.insert(0, self.CURRENT_PROFILE_NAME)
         return profiles
 

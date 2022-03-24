@@ -6,6 +6,7 @@ import os
 import logging
 import fire
 from llgd.lib.llgd_lib import light_on, light_off, set_brightness, set_temperature
+from llgd.config.llgd_config import LlgdConfig
 
 logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(message)s', level=os.getenv('LITRA_LOGLEVEL',
@@ -61,6 +62,23 @@ class Cli():
         self.command_count += 1
         return self
 
+    def profile(self, profile):
+        """Sets the brightness and temperature to that of the specified profile (in the config file)
+
+        Args:
+            profile (string): Profile it set
+        """
+        config = LlgdConfig()
+        settings = config.read_profile(profile)
+
+        if settings is not None:
+            self.bright(settings[config.BRIGHT])
+            self.temp(settings[config.TEMP])
+            self.on()
+            return f'Profle "{profile}" activated.'
+
+        return f'Profle "{profile}" not found.'
+
     def __str__(self):
         count = self.command_count
         return f"Executed {count} commands"
@@ -78,7 +96,8 @@ def main():
         'on': cli.on,
         'off': cli.off,
         'temp': cli.temp,
-        'bright': cli.bright
+        'bright': cli.bright,
+        'profile': cli.profile
     })
 
 
