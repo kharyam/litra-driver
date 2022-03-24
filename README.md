@@ -1,4 +1,5 @@
 # Python Utility for Logitech Litra Glow
+[![PyPI version](https://badge.fury.io/py/litra-driver.svg)](https://badge.fury.io/py/litra-driver)
 
 ## Introduction
 
@@ -13,7 +14,10 @@ sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
            MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
 
 sudo reboot
-pip install litra-driver --upgrade
+
+# Uninstall if previously installed
+pip uninstall litra-driver
+pip install litra-driver
 
 # Command Line Interface
 lc --help
@@ -32,13 +36,6 @@ lcui
 
 ![lcui Screen Shot](images/ui.png)
 ## The CLI
-
-The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
-* CRITICAL
-* ERROR
-* WARNING
-* INFO
-* DEBUG
 
 ```
 NAME
@@ -66,13 +63,20 @@ COMMANDS
 Sample Usage
 ```bash
 lc on
-lc brightness 1
-lc brightness 50
+lc bright 10
+lc temp 6500
 lc off
 
 # Chain multiple commands
-lc on brightness 100 temperature 2700
+lc on bright 100 temp 2700
 ```
+
+The log level can be adjusted by setting the environment variable `LITRA_LOGLEVEL` to one of the following:
+* CRITICAL
+* ERROR
+* WARNING
+* INFO
+* DEBUG
 
 ## Development
 ### Creating / installing the distribution
