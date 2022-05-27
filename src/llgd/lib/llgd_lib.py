@@ -18,18 +18,30 @@ MAX_BRIGHTNESS = 0xfa
 
 config = LlgdConfig()
 
+def count():
+    """ Returns a count of all devices
+    """
+    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
+    total_dev_count = 0
+    for _ in devs:
+        total_dev_count+=1
+    return total_dev_count
 
-def setup():
+def setup(index):
     """Sets up the device
 
     Raises:
-        ValueError: Whhen the device cannot be found
+        ValueError: When the device cannot be found
 
     Returns:
         [device, reattach]: where device is a Device object and reattach
         is a bool indicating whether the kernel driver should be reattached
     """
-    dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
+    dev_list = []
+    for a_dev in devs:
+        dev_list.append(a_dev)
+    dev = dev_list[index]
     if dev is None:
         raise ValueError('Device not found')
 
@@ -65,23 +77,25 @@ def teardown(dev, reattach):
 def light_on():
     """Turns on the light
     """
-    dev, reattach = setup()
-    dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
-    logging.info("Light On")
-    teardown(dev, reattach)
+    for index in range(0, count()):
+        dev, reattach = setup(index)
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.read(0x02, 64)
+        logging.info("Light On")
+        teardown(dev, reattach)
 
 
 def light_off():
     """Turns off the light
     """
-    dev, reattach = setup()
-    dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
-    logging.info("Light Off")
-    teardown(dev, reattach)
+    for index in range(0, count()):
+        dev, reattach = setup(index)
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.read(0x02, 64)
+        logging.info("Light Off")
+        teardown(dev, reattach)
 
 
 def set_brightness(level):
@@ -91,15 +105,16 @@ def set_brightness(level):
         level (int): The brigtness level from 1-100. Converted between the min and
         max brightness levels supported by the device.
     """
-    dev, reattach = setup()
-    adjusted_level = math.floor(
-        MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
-    dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-    dev.read(0x02, 64)
-    config.update_current_state(brightness=level)
-    logging.info("Brightness set to %d", level)
-    teardown(dev, reattach)
+    for index in range(0, count()):
+        dev, reattach = setup(index)
+        adjusted_level = math.floor(
+            MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.read(0x02, 64)
+        config.update_current_state(brightness=level)
+        logging.info("Brightness set to %d", level)
+        teardown(dev, reattach)
 
 
 def set_temperature(temp):
@@ -108,12 +123,13 @@ def set_temperature(temp):
     Args:
         temp (int): A color temperature of between 2700 and 6500
     """
-    dev, reattach = setup()
-    byte_array = temp.to_bytes(2, 'big')
-    dev.write(0x02, [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
-              TIMEOUT_MS)
-    dev.read(0x02, 64)
-    config.update_current_state(temp=temp)
-    logging.info("Temperature set to %d", temp)
-    teardown(dev, reattach)
+    for index in range(0, count()):
+        dev, reattach = setup(index)
+        byte_array = temp.to_bytes(2, 'big')
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+                  TIMEOUT_MS)
+        dev.read(0x02, 64)
+        config.update_current_state(temp=temp)
+        logging.info("Temperature set to %d", temp)
+        teardown(dev, reattach)
