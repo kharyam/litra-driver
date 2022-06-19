@@ -82,6 +82,8 @@ The log level can be adjusted by setting the environment variable `LITRA_LOGLEVE
 ### Creating / installing the distribution
 
 ```bash
+pip install build
+
 # Create distribution
 python -m build
 
