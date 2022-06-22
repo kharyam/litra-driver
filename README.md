@@ -10,8 +10,7 @@ After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products
 ### Linux
 ```bash
 # If necessary, create a udev role to grant permission to access the light
-sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",\
-           MODE="0666"' > /etc/udev/rules.d/82-litra-glow.rules
+sudo tee /etc/udev/rules.d/82-litra-glow.rules <<< 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",MODE="0666"'
 
 sudo reboot
 
