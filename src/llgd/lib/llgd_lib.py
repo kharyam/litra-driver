@@ -9,7 +9,8 @@ import usb.util
 from llgd.config.llgd_config import LlgdConfig
 
 VENDOR_ID = 0x046d
-PRODUCT_ID = 0xc900
+LITRA_PRODUCT_IDS = [0xc900, 0xc901]
+
 LIGHT_OFF = 0x00
 LIGHT_ON = 0x01
 TIMEOUT_MS = 3000
@@ -17,15 +18,22 @@ MIN_BRIGHTNESS = 0x14
 MAX_BRIGHTNESS = 0xfa
 
 config = LlgdConfig()
+devices = []
+
+def search_devices():
+    """ Search for Litra Devices
+    """
+    logging.info("Searching for litra devices...")
+    for product_id in LITRA_PRODUCT_IDS:
+        product_devices = usb.core.find(idVendor=VENDOR_ID, idProduct=product_id, find_all=True)
+        for product_device in product_devices:
+            logging.info('Found Device "%s"', product_device.product)
+            devices.append(product_device)
 
 def count():
     """ Returns a count of all devices
     """
-    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
-    total_dev_count = 0
-    for _ in devs:
-        total_dev_count+=1
-    return total_dev_count
+    return len(devices)
 
 def setup(index):
     """Sets up the device
@@ -37,11 +45,7 @@ def setup(index):
         [device, reattach]: where device is a Device object and reattach
         is a bool indicating whether the kernel driver should be reattached
     """
-    devs = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID, find_all=True)
-    dev_list = []
-    for a_dev in devs:
-        dev_list.append(a_dev)
-    dev = dev_list[index]
+    dev = devices[index]
     if dev is None:
         raise ValueError('Device not found')
 
@@ -65,7 +69,6 @@ def setup(index):
 
     return dev, reattach
 
-
 def teardown(dev, reattach):
     """Tears down the device
     """
@@ -79,8 +82,8 @@ def light_on():
     """
     for index in range(0, count()):
         dev, reattach = setup(index)
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00,
-                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
         dev.read(0x02, 64)
         logging.info("Light On")
         teardown(dev, reattach)
@@ -91,8 +94,8 @@ def light_off():
     """
     for index in range(0, count()):
         dev, reattach = setup(index)
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00,
-                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
         dev.read(0x02, 64)
         logging.info("Light Off")
         teardown(dev, reattach)
@@ -109,8 +112,8 @@ def set_brightness(level):
         dev, reattach = setup(index)
         adjusted_level = math.floor(
             MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00,
-                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
+        dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
         dev.read(0x02, 64)
         config.update_current_state(brightness=level)
         logging.info("Brightness set to %d", level)
@@ -133,3 +136,5 @@ def set_temperature(temp):
         config.update_current_state(temp=temp)
         logging.info("Temperature set to %d", temp)
         teardown(dev, reattach)
+
+search_devices()
