@@ -8,7 +8,6 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(message)s', level=getenv('LITRA_LOGLEVEL',
                                                                    default='WARNING'))
 
-
 class LlgdConfig:
     """This class allows the state of the light along with custom profiles
     to be persisted into a user config file
