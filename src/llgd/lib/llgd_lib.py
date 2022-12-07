@@ -9,7 +9,14 @@ import usb.util
 from llgd.config.llgd_config import LlgdConfig
 
 VENDOR_ID = 0x046d
-LITRA_PRODUCT_IDS = [0xc900, 0xc901]
+LITRA_PRODUCTS = [{'name': 'Glow',
+                   'id': 0xc900,
+                   'endpoint': 0x02},
+
+                  {'name': 'Beam',
+                   'id': 0xc901,
+                   'endpoint': 0x01},
+                  ]
 
 LIGHT_OFF = 0x00
 LIGHT_ON = 0x01
@@ -17,17 +24,19 @@ TIMEOUT_MS = 3000
 MIN_BRIGHTNESS = 0x14
 MAX_BRIGHTNESS = 0xfa
 
+endpoint_mapping={}
 config = LlgdConfig()
 devices = []
 
-def search_devices():
+def find_devices():
     """ Search for Litra Devices
     """
     logging.info("Searching for litra devices...")
-    for product_id in LITRA_PRODUCT_IDS:
-        product_devices = usb.core.find(idVendor=VENDOR_ID, idProduct=product_id, find_all=True)
+    for product in LITRA_PRODUCTS:
+        product_devices = usb.core.find(idVendor=VENDOR_ID, idProduct=product['id'], find_all=True)
         for product_device in product_devices:
             logging.info('Found Device "%s"', product_device.product)
+            endpoint_mapping[product_device]=product['endpoint']
             devices.append(product_device)
 
 def count():
@@ -82,9 +91,9 @@ def light_on():
     """
     for index in range(0, count()):
         dev, reattach = setup(index)
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00, 0x00,
+        dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(0x02, 64)
+        dev.read(endpoint_mapping[dev], 64)
         logging.info("Light On")
         teardown(dev, reattach)
 
@@ -94,9 +103,9 @@ def light_off():
     """
     for index in range(0, count()):
         dev, reattach = setup(index)
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00, 0x00,
+        dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(0x02, 64)
+        dev.read(endpoint_mapping[dev], 64)
         logging.info("Light Off")
         teardown(dev, reattach)
 
@@ -112,9 +121,9 @@ def set_brightness(level):
         dev, reattach = setup(index)
         adjusted_level = math.floor(
             MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00, 0x00,
+        dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(0x02, 64)
+        dev.read(endpoint_mapping[dev], 64)
         config.update_current_state(brightness=level)
         logging.info("Brightness set to %d", level)
         teardown(dev, reattach)
@@ -129,12 +138,12 @@ def set_temperature(temp):
     for index in range(0, count()):
         dev, reattach = setup(index)
         byte_array = temp.to_bytes(2, 'big')
-        dev.write(0x02, [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
+        dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                   TIMEOUT_MS)
-        dev.read(0x02, 64)
+        dev.read(endpoint_mapping[dev], 64)
         config.update_current_state(temp=temp)
         logging.info("Temperature set to %d", temp)
         teardown(dev, reattach)
 
-search_devices()
+find_devices()
