@@ -1,6 +1,6 @@
 """
 This module defines a library for accessing the functionality of the
-Logitech Lumitra Glow
+Logitech Litra Glow and Logitech Litra Beam
 """
 import logging
 import math
@@ -11,11 +11,13 @@ from llgd.config.llgd_config import LlgdConfig
 VENDOR_ID = 0x046d
 LITRA_PRODUCTS = [{'name': 'Glow',
                    'id': 0xc900,
-                   'endpoint': 0x02},
+                   'endpoint': 0x02,
+                   'buffer_length': 64},
 
                   {'name': 'Beam',
                    'id': 0xc901,
-                   'endpoint': 0x01},
+                   'endpoint': 0x01,
+                   'buffer_length': 32},
                   ]
 
 LIGHT_OFF = 0x00
@@ -25,6 +27,7 @@ MIN_BRIGHTNESS = 0x14
 MAX_BRIGHTNESS = 0xfa
 
 endpoint_mapping={}
+buffer_length_mapping={}
 config = LlgdConfig()
 devices = []
 
@@ -37,6 +40,7 @@ def find_devices():
         for product_device in product_devices:
             logging.info('Found Device "%s"', product_device.product)
             endpoint_mapping[product_device]=product['endpoint']
+            buffer_length_mapping[product_device]=product['buffer_length']
             devices.append(product_device)
 
 def count():
@@ -93,7 +97,7 @@ def light_on():
         dev, reattach = setup(index)
         dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x1c, LIGHT_ON, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(endpoint_mapping[dev], 64)
+        dev.read(endpoint_mapping[dev], buffer_length_mapping[dev])
         logging.info("Light On")
         teardown(dev, reattach)
 
@@ -105,7 +109,7 @@ def light_off():
         dev, reattach = setup(index)
         dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x1c, LIGHT_OFF, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(endpoint_mapping[dev], 64)
+        dev.read(endpoint_mapping[dev], buffer_length_mapping[dev])
         logging.info("Light Off")
         teardown(dev, reattach)
 
@@ -123,7 +127,7 @@ def set_brightness(level):
             MIN_BRIGHTNESS + ((level/100) * (MAX_BRIGHTNESS - MIN_BRIGHTNESS)))
         dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x4c, 0x00, adjusted_level, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], TIMEOUT_MS)
-        dev.read(endpoint_mapping[dev], 64)
+        dev.read(endpoint_mapping[dev], buffer_length_mapping[dev])
         config.update_current_state(brightness=level)
         logging.info("Brightness set to %d", level)
         teardown(dev, reattach)
@@ -141,7 +145,7 @@ def set_temperature(temp):
         dev.write(endpoint_mapping[dev], [0x11, 0xff, 0x04, 0x9c, byte_array[0], byte_array[1], 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                   TIMEOUT_MS)
-        dev.read(endpoint_mapping[dev], 64)
+        dev.read(endpoint_mapping[dev], buffer_length_mapping[dev])
         config.update_current_state(temp=temp)
         logging.info("Temperature set to %d", temp)
         teardown(dev, reattach)
