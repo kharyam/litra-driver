@@ -1,5 +1,5 @@
 # Python Utility for Logitech Litra Glow and Beam
-[![PyPI version](https://badge.fury.io/py/litra-driver.svg)](https://badge.fury.io/py/litra-driver)
+[![PyPI version](https://badge.fury.io/py/litra-driver.svg?unused=0.8.0)](https://badge.fury.io/py/litra-driver)
 
 ## Introduction
 
