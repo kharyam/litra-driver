@@ -27,6 +27,14 @@ lcui
 
 ```
 
+#### Fedora Dependencies
+
+The following dependencies may need to be installed for the UI. This was specifically noted on Fedora 37:
+
+```bash
+sudo dnf install -y python3-tkinter libappindicator-gtk3
+```
+
 ## The UI
 A basic UI can be launched to allow control of the light:
 
@@ -95,4 +103,9 @@ tox -e lint
 
 # Unit Test - "Coming Soon"™
 tox -e test
+
+# Push to pypi 
+pip install twine
+twine check dist/*
+twine upload dist/*
 ```
