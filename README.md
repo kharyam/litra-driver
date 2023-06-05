@@ -40,7 +40,7 @@ sudo dnf install -y python3-tkinter libappindicator-gtk3
 The following dependencies may need to be installed for the UI. This was specifically noted on ubuntu 20.04:
 
 ```bash
-sudo apt-get install -y python3-tk
+sudo apt-get install -y python3-tk gir1.2-appindicator3-0.1
 ```
 
 ## The UI
