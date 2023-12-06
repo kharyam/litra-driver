@@ -13,7 +13,12 @@ After purchasing a [Logitech Litra Glow](https://www.logitech.com/en-us/products
 sudo tee /etc/udev/rules.d/82-litra-glow.rules <<< 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c900",MODE="0666"'
 sudo tee /etc/udev/rules.d/82-litra-beam.rules <<< 'SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c901",MODE="0666"'
 
-sudo reboot
+# For most operating systems, reloading udev rules is enough
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
+# For others, a reboot may be required
+# sudo reboot
 
 # Uninstall if previously installed
 pip uninstall litra-driver
