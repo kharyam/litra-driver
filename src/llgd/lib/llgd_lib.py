@@ -18,6 +18,11 @@ LITRA_PRODUCTS = [{'name': 'Glow',
                    'id': 0xc901,
                    'endpoint': 0x01,
                    'buffer_length': 32},
+                  
+                  {'name': 'Beam LX',
+                   'id': 0xc903,
+                   'endpoint': 0x1,
+                   'buffer_length': 32},
                   ]
 
 LIGHT_OFF = 0x00
